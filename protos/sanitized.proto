@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package sanitized;
+
+message SanitizedTransaction {
+  // bincode serialized versioned_transaction
+  bytes versioned_transaction = 1;
+  bytes message_hash = 2;
+  // is_simple_vote_tx always == false
+  // bincode serialized LoadedAddress
+  bytes loaded_addresses = 3;
+}
+
+message SanitizedTransactionBatch {
+  repeated SanitizedTransaction transactions = 1;
+}
