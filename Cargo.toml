@@ -5,6 +5,7 @@ name = "jito-protos"
 version = "0.1.0"
 
 [dependencies]
+anyhow = { workspace = true }
 bincode = { workspace = true }
 bytes = { workspace = true }
 prost = { workspace = true }
