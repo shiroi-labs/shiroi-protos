@@ -9,7 +9,41 @@ pub mod block {
 }
 
 pub mod block_engine {
+    use crate::{sanitized::SanitizedTransactionBatch, shared::Header};
+    use anyhow::{bail, Context};
+    use std::time::Duration;
     tonic::include_proto!("block_engine");
+
+    impl TryFrom<ExpiringSanitizedTransactionBatch> for super::ExpiringSanitizedTransactionBatch {
+        type Error = anyhow::Error;
+
+        fn try_from(value: ExpiringSanitizedTransactionBatch) -> Result<Self, Self::Error> {
+            let ExpiringSanitizedTransactionBatch {
+                header,
+                batch,
+                expiry_ms,
+            } = value;
+            let Some(Header { ts: Some(ts) }) = header else {
+                bail!("missing header");
+            };
+            let ts = ts.try_into().context("failed to convert timestamp")?;
+            let expires_at = ts + Duration::from_millis(expiry_ms as u64);
+            let Some(SanitizedTransactionBatch { transactions }) = batch else {
+                bail!("missing transactions");
+            };
+
+            let transactions = transactions
+                .into_iter()
+                .map(TryInto::try_into)
+                .collect::<Result<Vec<_>, _>>()?;
+
+            Ok(Self {
+                ts,
+                expires_at,
+                transactions,
+            })
+        }
+    }
 }
 
 pub mod bundle {
@@ -133,4 +167,10 @@ pub fn derive_bundle_id(transactions: &[solana_sdk::transaction::VersionedTransa
     let mut hasher = sha2::Sha256::new();
     hasher.update(transactions.iter().map(|tx| tx.signatures[0]).join(","));
     format!("{:x}", hasher.finalize())
+}
+
+pub struct ExpiringSanitizedTransactionBatch {
+    pub ts: std::time::SystemTime,
+    pub expires_at: std::time::SystemTime,
+    pub transactions: Vec<solana_sdk::transaction::SanitizedTransaction>,
 }
