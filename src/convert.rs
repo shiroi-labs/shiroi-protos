@@ -1,5 +1,6 @@
+use bincode::serialize;
 use solana_perf::packet::Packet;
-use solana_sdk::transaction::SanitizedTransaction;
+use solana_sdk::transaction::{SanitizedTransaction, VersionedTransaction};
 
 use crate::{
     packet::{Meta as ProtoMeta, Packet as ProtoPacket, PacketFlags as ProtoPacketFlags},
@@ -20,6 +21,22 @@ pub fn packet_to_proto_packet(p: &Packet) -> Option<ProtoPacket> {
                 simple_vote_tx: p.meta().is_simple_vote_tx(),
                 tracer_packet: p.meta().is_tracer_packet(),
             }),
+            sender_stake: 0,
+        }),
+    })
+}
+
+/// Converts a VersionedTransaction to a protobuf packet
+pub fn proto_packet_from_versioned_tx(tx: &VersionedTransaction) -> Option<ProtoPacket> {
+    let data = serialize(tx).ok()?;
+    let size = data.len() as u64;
+    Some(ProtoPacket {
+        data,
+        meta: Some(ProtoMeta {
+            size,
+            addr: "".to_string(),
+            port: 0,
+            flags: None,
             sender_stake: 0,
         }),
     })

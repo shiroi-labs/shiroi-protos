@@ -75,6 +75,7 @@ pub mod bundle {
 }
 
 pub mod packet {
+    use crate::convert::proto_packet_from_versioned_tx;
     use anyhow::Context;
     use solana_sdk::transaction::VersionedTransaction;
     tonic::include_proto!("packet");
@@ -108,6 +109,12 @@ pub mod packet {
                 .unwrap()
                 .try_into()
                 .unwrap()
+        }
+    }
+
+    impl From<&VersionedTransaction> for Packet {
+        fn from(value: &VersionedTransaction) -> Self {
+            proto_packet_from_versioned_tx(value).expect("serializes")
         }
     }
 }
