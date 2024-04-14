@@ -62,10 +62,31 @@ pub mod bundle {
         }
     }
 
+    impl From<&[VersionedTransaction]> for BundleUuid {
+        fn from(transactions: &[VersionedTransaction]) -> Self {
+            let uuid = crate::derive_bundle_id(&transactions);
+            Self {
+                bundle: Some(transactions.into()),
+                uuid,
+            }
+        }
+    }
+
     impl From<Vec<VersionedTransaction>> for Bundle {
         fn from(transactions: Vec<VersionedTransaction>) -> Self {
             Self {
                 packets: transactions.into_iter().map(Into::into).collect(),
+                header: Some(super::shared::Header {
+                    ts: Some(Timestamp::from(SystemTime::now())),
+                }),
+            }
+        }
+    }
+
+    impl From<&[VersionedTransaction]> for Bundle {
+        fn from(transactions: &[VersionedTransaction]) -> Self {
+            Self {
+                packets: transactions.iter().map(Into::into).collect(),
                 header: Some(super::shared::Header {
                     ts: Some(Timestamp::from(SystemTime::now())),
                 }),
