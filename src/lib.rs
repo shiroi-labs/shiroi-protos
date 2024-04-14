@@ -64,7 +64,7 @@ pub mod bundle {
 
     impl From<&[VersionedTransaction]> for BundleUuid {
         fn from(transactions: &[VersionedTransaction]) -> Self {
-            let uuid = crate::derive_bundle_id(&transactions);
+            let uuid = crate::derive_bundle_id(transactions);
             Self {
                 bundle: Some(transactions.into()),
                 uuid,
