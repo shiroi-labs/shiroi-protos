@@ -81,6 +81,14 @@ message SanitizedTransactionBatchUpdate {
   }
 }
 
+message ConnectedValidatorsUpdate {
+  repeated bytes validators = 1;
+}
+
+message ConnectedValidatorsResponse {
+
+}
+
 /// Validators can connect to Block Engines to receive packets and bundles.
 service BlockEngineValidator {
   /// Validators can subscribe to the block engine to receive a stream of packets
@@ -110,4 +118,6 @@ service BlockEngineRelayer {
   // The issue is being tracked here: https://github.com/envoyproxy/envoy/issues/22748. In the meantime, the
   // server will stream heartbeats to clients at some reasonable cadence.
   rpc StartExpiringSanitizedTransactionStream (stream SanitizedTransactionBatchUpdate) returns (stream StartExpiringPacketStreamResponse) {}
+
+  rpc ConnectedValidatorsStream (stream ConnectedValidatorsUpdate) returns (ConnectedValidatorsResponse) {}
 }
