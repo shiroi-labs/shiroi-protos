@@ -119,5 +119,7 @@ service BlockEngineRelayer {
   // server will stream heartbeats to clients at some reasonable cadence.
   rpc StartExpiringSanitizedTransactionStream (stream SanitizedTransactionBatchUpdate) returns (stream StartExpiringPacketStreamResponse) {}
 
+  rpc StartExpiringPacketStream (stream PacketBatchUpdate) returns (stream StartExpiringPacketStreamResponse) {}
+
   rpc ConnectedValidatorsStream (stream ConnectedValidatorsUpdate) returns (ConnectedValidatorsResponse) {}
 }
