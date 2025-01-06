@@ -102,9 +102,6 @@ service SearcherService {
   // A success result would indicate the bundle won its state auction and was submitted to the validator.
   rpc SubscribeBundleResults (SubscribeBundleResultsRequest) returns (stream bundle.BundleResult) {}
 
-  // Subscribe to mempool transactions based on a few filters
-  rpc SubscribeMempool (MempoolSubscription) returns (stream PendingTxNotification) {}
-
   rpc SendBundle (SendBundleRequest) returns (SendBundleResponse) {}
 
   // Returns the next scheduled leader connected to the block engine.
