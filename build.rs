@@ -17,6 +17,7 @@ fn main() {
                 "protos/packet.proto",
                 "protos/relayer.proto",
                 "protos/searcher.proto",
+                "protos/custom_searcher.proto",
                 "protos/shared.proto",
                 "protos/sanitized.proto",
             ],

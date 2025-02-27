@@ -232,6 +232,10 @@ pub mod searcher {
     tonic::include_proto!("searcher");
 }
 
+pub mod custom_searcher {
+    tonic::include_proto!("custom_searcher");
+}
+
 pub mod shared {
     tonic::include_proto!("shared");
 }
