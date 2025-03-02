@@ -3,9 +3,6 @@ syntax = "proto3";
 package searcher;
 
 import "bundle.proto";
-import "packet.proto";
-
-import "google/protobuf/timestamp.proto";
 
 message SlotList {
   repeated uint64 slots = 1;
@@ -13,7 +10,7 @@ message SlotList {
 
 message ConnectedLeadersResponse {
   // Mapping of validator pubkey to leader slots for the current epoch.
-  map<string /* validator pubkey */ , SlotList> connected_validators = 1;
+  map<string /* validator pubkey */, SlotList> connected_validators = 1;
 }
 
 message SendBundleRequest {
@@ -25,47 +22,21 @@ message SendBundleResponse {
   string uuid = 1;
 }
 
-message ProgramSubscriptionV0 {
-  // Base58 encoded program id that transactions mention
-  repeated string programs = 1;
+message NextScheduledLeaderRequest {
+  // Defaults to the currently connected region if no region provided.
+  repeated string regions = 1;
 }
-
-message WriteLockedAccountSubscriptionV0 {
-  // Base58 encoded account pubkey that transactions mention
-  repeated string accounts = 1;
-}
-
-message MempoolSubscription {
-  // Filter by program id or account pubkey
-  oneof msg {
-    ProgramSubscriptionV0 program_v0_sub = 1;
-    WriteLockedAccountSubscriptionV0 wla_v0_sub = 2;
-    /// field numbers upto (and incl) 9 are reserved
-  }
-
-  // Filters transactions to originate from specified regions.
-  // Defaults to the currently connected region.
-  repeated string regions = 10;
-}
-
-message PendingTxNotification {
-  // server-side timestamp the transactions were generated at (for debugging/profiling purposes)
-  google.protobuf.Timestamp server_side_ts = 1;
-  // expiration time of the packet
-  google.protobuf.Timestamp expiration_time = 2;
-  // list of pending transactions
-  repeated packet.Packet transactions = 3;
-}
-
-message NextScheduledLeaderRequest {}
 
 message NextScheduledLeaderResponse {
   // the current slot the backend is on
   uint64 current_slot = 1;
 
-  // the slot and identity of the next leader
+  // the slot of the next leader
   uint64 next_leader_slot = 2;
+  // the identity pubkey (base58) of the next leader
   string next_leader_identity = 3;
+  // the block engine region of the next leader
+  string next_leader_region = 4;
 }
 
 message ConnectedLeadersRequest {}
@@ -75,7 +46,7 @@ message ConnectedLeadersRegionedRequest {
   repeated string regions = 1;
 }
 message ConnectedLeadersRegionedResponse {
-  map<string /* region */ , ConnectedLeadersResponse> connected_validators = 1;
+  map<string /* region */, ConnectedLeadersResponse> connected_validators = 1;
 }
 
 
