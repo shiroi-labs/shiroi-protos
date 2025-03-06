@@ -241,6 +241,10 @@ pub mod shared {
     tonic::include_proto!("shared");
 }
 
+pub mod shredstream {
+    tonic::include_proto!("shredstream");
+}
+
 pub mod sanitized {
     tonic::include_proto!("sanitized");
 
@@ -271,6 +275,7 @@ pub mod sanitized {
                 MessageHash::Precomputed(message_hash),
                 None,
                 SimpleAddressLoader::Enabled(loaded_addresses),
+                &Default::default(),
             )
             .map_err(|_| anyhow!("failed to create SanitizedTransaction"))
         }
