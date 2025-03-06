@@ -19,6 +19,7 @@ fn main() {
                 "protos/searcher.proto",
                 "protos/custom_searcher.proto",
                 "protos/shared.proto",
+                "protos/shredstream.proto",
                 "protos/sanitized.proto",
             ],
             &["protos"],
